@@ -95,9 +95,9 @@ After installation, go to **Plugins** → **Blog Manager** to configure:
 ### Blog Detection
 
 The plugin auto-detects your blog folder on initialization if **Auto-detect blog on init** is enabled. It scans `user/pages/` for a folder matching your configured `Blog Path` (e.g. `/blog`), stripping Grav's numeric prefixes (e.g. `03.blog` matches `/blog`).
-```
+`
 If your blog folder is not detected (e.g. after moving folders or changing the path), go to **Plugins** → **Blog Manager**, verify the **Blog Path** setting, and click **Save**. This triggers a re-scan of the pages directory.
-```
+`
 
 ### Usage
 
@@ -122,12 +122,11 @@ Click **New Post** to create a new unpublished post via Grav's native page creat
 Use the export and import buttons to export all posts as a ZIP or import posts from a ZIP file
 Use the filter panel to search, filter by status, date range, category, tag, or language
 
-```
+`
 * Usage hint: 
 When creating or editing a blog post, after saving, hit the back button to return to the blog manager.
 I had the plan to recreate the post creation form in a modal but I choose not to do it to avoid code duplication and to keep the code efficient.
-```
-
+`
 
 ### Post Structure
 
