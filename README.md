@@ -95,9 +95,8 @@ After installation, go to **Plugins** → **Blog Manager** to configure:
 ### Blog Detection
 
 The plugin auto-detects your blog folder on initialization if **Auto-detect blog on init** is enabled. It scans `user/pages/` for a folder matching your configured `Blog Path` (e.g. `/blog`), stripping Grav's numeric prefixes (e.g. `03.blog` matches `/blog`).
-`
-If your blog folder is not detected (e.g. after moving folders or changing the path), go to **Plugins** → **Blog Manager**, verify the **Blog Path** setting, and click **Save**. This triggers a re-scan of the pages directory.
-`
+
+`If your blog folder is not detected (e.g. after moving folders or changing the path), go to **Plugins** → **Blog Manager**, verify the **Blog Path** setting, and click **Save**. This triggers a re-scan of the pages directory.`
 
 ### Usage
 
