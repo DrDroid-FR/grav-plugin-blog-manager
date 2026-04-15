@@ -122,7 +122,7 @@ Use the export and import buttons to export all posts as a ZIP or import posts f
 Use the filter panel to search, filter by status, date range, category, tag, or language
 
 * Usage hint:  
-When creating or editing a blog post, after saving, hit the back button to return to the blog manager.
+When creating or editing a blog post, after saving, hit the back button to return to the blog manager.  
 I had the plan to recreate the post creation form in a modal but I choose not to do it to avoid code duplication and to keep the code efficient.
 
 ### Post Structure
@@ -141,7 +141,8 @@ user/pages/
       item.en.md
 ```
 
-The plugin scans the configured `blog_path` (e.g. `/blog`) and auto-detects the actual folder even if it uses a numeric prefix (e.g. `03.blog`). Language-specific item files (e.g. `item.fr.md`, `item.en.md`) are also supported.
+The plugin scans the configured `blog_path` (e.g. `/blog`) and auto-detects the actual folder even if it uses a numeric prefix (e.g. `03.blog`). 
+Language-specific item files (e.g. `item.fr.md`, `item.en.md`) are also supported.
 
 ## File Structure
 
