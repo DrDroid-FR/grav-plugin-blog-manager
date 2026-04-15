@@ -121,11 +121,9 @@ Click **New Post** to create a new unpublished post via Grav's native page creat
 Use the export and import buttons to export all posts as a ZIP or import posts from a ZIP file
 Use the filter panel to search, filter by status, date range, category, tag, or language
 
-`
-* Usage hint: 
+* Usage hint:  
 When creating or editing a blog post, after saving, hit the back button to return to the blog manager.
 I had the plan to recreate the post creation form in a modal but I choose not to do it to avoid code duplication and to keep the code efficient.
-`
 
 ### Post Structure
 
