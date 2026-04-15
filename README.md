@@ -113,7 +113,7 @@ Click a **post title** or the **Edit** button to open it in Grav's native page e
 Click **Published** or **Visible** badges to toggle status
 Use **Duplicate** to copy a post, or **Delete** to remove it permanently
 #### Bulk Actions
-![Bulk Actions](assets/images/readme/bulk_bar.jpg)
+![Bulk Actions](assets/images/readme/bulk_bar.jpg)  
 Use top left **Tickbox** to select individual or multiple posts, **Shift+click** for selecting multiple posts range
 Use the bulk action bar to Publish, toggle Visible, Duplicate, Bulk Export or Delete selected posts
 #### Sidebar
