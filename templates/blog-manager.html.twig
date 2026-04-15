@@ -1,0 +1,170 @@
+{% extends 'partials/base.html.twig' %}
+
+{% set title = "PLUGIN_BLOG_MANAGER.TITLE_BAR"|t %}
+
+{% block titlebar %}
+<div class="bm-titlebar">
+    <div class="bm-titlebar-left">
+        <h1><i class="fa fa-fw fa-book"></i> {{ "PLUGIN_BLOG_MANAGER.TITLE_BAR_SHORT"|t }}</h1>
+        <div class="bm-titlebar-views">
+            <button class="view-btn active" data-view="grid" onclick="BlogManager.setView('grid')" title="{{ "PLUGIN_BLOG_MANAGER.TOOLTIP_BIG_CARDS"|t }}"><i class="fa fa-th-large"></i></button>
+            <button class="view-btn" data-view="smallgrid" onclick="BlogManager.setView('smallgrid')" title="{{ "PLUGIN_BLOG_MANAGER.TOOLTIP_SMALL_CARDS"|t }}"><i class="fa fa-th"></i></button>
+            <button class="view-btn" data-view="list" onclick="BlogManager.setView('list')" title="{{ "PLUGIN_BLOG_MANAGER.TOOLTIP_LIST"|t }}"><i class="fa fa-list"></i></button>
+        </div>
+        <div id="bm-bulk-bar"></div>
+    </div>
+    <span class="post-count" id="post-count"></span>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="blog-manager-layout">
+    <div class="blog-manager-main">
+            <div id="blog-manager-posts" class="blog-posts-list view-grid"></div>
+    </div>
+    <div class="blog-manager-sidebar">
+        <a class="blog-newpost-btn" href="javascript:void(0)" onclick="BlogManager.newPost()"><i class="fa fa-plus"></i> {{ "PLUGIN_BLOG_MANAGER.NEW_POST"|t }}</a>
+        <div class="blog-sidebar-actions">
+            <button class="blog-sidebar-btn" onclick="BlogManager.exportAllPosts()"><i class="fa fa-download"></i> {{ "PLUGIN_BLOG_MANAGER.BTN_EXPORT_ALL"|t }}</button>
+            <button class="blog-sidebar-btn" onclick="BlogManager.triggerImport()"><i class="fa fa-upload"></i> {{ "PLUGIN_BLOG_MANAGER.BTN_IMPORT"|t }}</button>
+        </div>
+        <div class="filter-panel">
+            <h3><i class="fa fa-filter"></i> {{ "PLUGIN_BLOG_MANAGER.FILTERS"|t }}</h3>
+            <div class="filter-group">
+                <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_SEARCH"|t }}</label>
+                <input type="text" id="filter-text" placeholder="{{ "PLUGIN_BLOG_MANAGER.FILTER_SEARCH_PLACEHOLDER"|t }}" oninput="BlogManager.applyFilters()">
+            </div>
+            <div class="filter-group-inline">
+                <div class="filter-half">
+                    <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_PUBLISHED"|t }}</label>
+                    <select id="filter-published" onchange="BlogManager.applyFilters()">
+                        <option value="">{{ "PLUGIN_BLOG_MANAGER.FILTER_ALL"|t }}</option>
+                        <option value="1">{{ "PLUGIN_BLOG_MANAGER.PUBLISHED"|t }}</option>
+                        <option value="0">{{ "PLUGIN_BLOG_MANAGER.UNPUBLISHED"|t }}</option>
+                    </select>
+                </div>
+                <div class="filter-half">
+                    <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_VISIBLE"|t }}</label>
+                    <select id="filter-visible" onchange="BlogManager.applyFilters()">
+                        <option value="">{{ "PLUGIN_BLOG_MANAGER.FILTER_ALL"|t }}</option>
+                        <option value="1">{{ "PLUGIN_BLOG_MANAGER.VISIBLE"|t }}</option>
+                        <option value="0">{{ "PLUGIN_BLOG_MANAGER.HIDDEN"|t }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-group">
+                <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_DATE_BEGIN"|t }}</label>
+                <input type="date" id="filter-date-begin" onchange="BlogManager.applyFilters()">
+            </div>
+            <div class="filter-group">
+                <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_DATE_END"|t }}</label>
+                <input type="date" id="filter-date-end" onchange="BlogManager.applyFilters()">
+            </div>
+            {#
+            <div class="filter-group">
+                <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_DATE_RANGE"|t }}</label>
+                <div id="range-calendar" class="range-calendar"></div>
+            </div>
+            #}
+            <div class="filter-group">
+                <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_CATEGORY"|t }}</label>
+                <select id="filter-category" onchange="BlogManager.applyFilters()">
+                    <option value="">{{ "PLUGIN_BLOG_MANAGER.FILTER_ALL"|t }}</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_TAG"|t }}</label>
+                <select id="filter-tag" onchange="BlogManager.applyFilters()">
+                    <option value="">{{ "PLUGIN_BLOG_MANAGER.FILTER_ALL"|t }}</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>{{ "PLUGIN_BLOG_MANAGER.FILTER_LANGUAGE"|t }}</label>
+                <select id="filter-language" onchange="BlogManager.applyFilters()">
+                    <option value="">{{ "PLUGIN_BLOG_MANAGER.FILTER_ALL"|t }}</option>
+                </select>
+            </div>
+            <div class="filter-actions">
+                <button class="button" onclick="BlogManager.clearFilters()"><i class="fa fa-times"></i> {{ "PLUGIN_BLOG_MANAGER.BTN_CLEAR"|t }}</button>
+            </div>
+            <div class="filter-count" id="filter-count"></div>
+        </div>
+    </div>
+</div>
+
+<div id="bm-delete-modal" class="bm-modal-overlay">
+    <div class="bm-modal-box">
+        <h3><i class="fa fa-exclamation-triangle" style="color:#d63638"></i> {{ "PLUGIN_BLOG_MANAGER.DELETE_TITLE"|t }}</h3>
+        <p>{{ "PLUGIN_BLOG_MANAGER.MODAL_DELETE_POST"|t }} <span class="post-name" id="bm-delete-title"></span>?<br>{{ "PLUGIN_BLOG_MANAGER.MODAL_CANNOT_UNDO"|t }}</p>
+        <div class="bm-modal-actions">
+            <button class="button" onclick="BlogManager.cancelDelete()">{{ "PLUGIN_BLOG_MANAGER.CANCEL"|t }}</button>
+            <button class="button danger" onclick="BlogManager.executeDelete()"><i class="fa fa-trash"></i> {{ "PLUGIN_BLOG_MANAGER.BTN_DELETE"|t }}</button>
+        </div>
+    </div>
+</div>
+
+<div id="bm-bulk-duplicate-modal" class="bm-modal-overlay">
+    <div class="bm-modal-box">
+        <h3><i class="fa fa-clone" style="color:#0073aa"></i> {{ "PLUGIN_BLOG_MANAGER.DUPLICATE_TITLE"|t }}</h3>
+        <p>{{ "PLUGIN_BLOG_MANAGER.MODAL_DUPLICATE_POSTS"|t }} <span class="post-name" id="bm-bulk-title"></span>?<br>{{ "PLUGIN_BLOG_MANAGER.MODAL_DUPLICATE_NOTE"|t }}</p>
+        <div class="bm-modal-actions">
+            <button class="button" onclick="BlogManager.cancelBulkModal('bm-bulk-duplicate-modal')">{{ "PLUGIN_BLOG_MANAGER.CANCEL"|t }}</button>
+            <button class="button" onclick="BlogManager.executeBulkDuplicate()" style="background:#0073aa;color:#fff;border-color:#0073aa;"><i class="fa fa-clone"></i> {{ "PLUGIN_BLOG_MANAGER.BTN_DUPLICATE"|t }}</button>
+        </div>
+    </div>
+</div>
+
+<div id="bm-bulk-delete-modal" class="bm-modal-overlay">
+    <div class="bm-modal-box">
+        <h3><i class="fa fa-exclamation-triangle" style="color:#d63638"></i> {{ "PLUGIN_BLOG_MANAGER.DELETE_POSTS_TITLE"|t }}</h3>
+        <p>{{ "PLUGIN_BLOG_MANAGER.MODAL_DELETE_POST"|t }} <span class="post-name" id="bm-bulk-delete-title"></span>?<br>{{ "PLUGIN_BLOG_MANAGER.MODAL_CANNOT_UNDO"|t }}</p>
+        <div class="bm-modal-actions">
+            <button class="button" onclick="BlogManager.cancelBulkModal('bm-bulk-delete-modal')">{{ "PLUGIN_BLOG_MANAGER.CANCEL"|t }}</button>
+            <button class="button danger" onclick="BlogManager.executeBulkDelete()"><i class="fa fa-trash"></i> {{ "PLUGIN_BLOG_MANAGER.BTN_DELETE"|t }}</button>
+        </div>
+    </div>
+</div>
+
+<script>
+window.PLUGIN_BLOG_MANAGER_VISIBLE = {{ "PLUGIN_BLOG_MANAGER.VISIBLE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_HIDDEN = {{ "PLUGIN_BLOG_MANAGER.HIDDEN"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_PUBLISHED = {{ "PLUGIN_BLOG_MANAGER.PUBLISHED"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_UNPUBLISHED = {{ "PLUGIN_BLOG_MANAGER.UNPUBLISHED"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_FILTER_ALL = {{ "PLUGIN_BLOG_MANAGER.FILTER_ALL"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_TITLE = {{ "PLUGIN_BLOG_MANAGER.COL_TITLE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_LANG = {{ "PLUGIN_BLOG_MANAGER.COL_LANG"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_EXCERPT = {{ "PLUGIN_BLOG_MANAGER.COL_EXCERPT"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_DATE = {{ "PLUGIN_BLOG_MANAGER.COL_DATE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_CATEGORY = {{ "PLUGIN_BLOG_MANAGER.COL_CATEGORY"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_PUBLISHED = {{ "PLUGIN_BLOG_MANAGER.COL_PUBLISHED"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_VISIBLE = {{ "PLUGIN_BLOG_MANAGER.COL_VISIBLE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_TAGS = {{ "PLUGIN_BLOG_MANAGER.COL_TAGS"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_COL_ACTIONS = {{ "PLUGIN_BLOG_MANAGER.COL_ACTIONS"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_EDIT = {{ "PLUGIN_BLOG_MANAGER.BTN_EDIT"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_DUPLICATE = {{ "PLUGIN_BLOG_MANAGER.BTN_DUPLICATE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_DELETE = {{ "PLUGIN_BLOG_MANAGER.BTN_DELETE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_PUBLISH = {{ "PLUGIN_BLOG_MANAGER.BTN_PUBLISH"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_VISIBLE = {{ "PLUGIN_BLOG_MANAGER.BTN_VISIBLE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_CLEAR = {{ "PLUGIN_BLOG_MANAGER.BTN_CLEAR"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_TOOLTIP_CLICK_PUBLISH = {{ "PLUGIN_BLOG_MANAGER.TOOLTIP_CLICK_PUBLISH"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_TOOLTIP_CLICK_UNPUBLISH = {{ "PLUGIN_BLOG_MANAGER.TOOLTIP_CLICK_UNPUBLISH"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_TOOLTIP_CLICK_SHOW = {{ "PLUGIN_BLOG_MANAGER.TOOLTIP_CLICK_SHOW"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_TOOLTIP_CLICK_HIDE = {{ "PLUGIN_BLOG_MANAGER.TOOLTIP_CLICK_HIDE"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_CALENDAR_CLICK_START = {{ "PLUGIN_BLOG_MANAGER.CALENDAR_CLICK_START"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_CALENDAR_CLEAR = {{ "PLUGIN_BLOG_MANAGER.CALENDAR_CLEAR"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_POST_COUNT = {{ "PLUGIN_BLOG_MANAGER.POST_COUNT"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BULK_SELECTED = {{ "PLUGIN_BLOG_MANAGER.BULK_SELECTED"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_NO_POSTS = {{ "PLUGIN_BLOG_MANAGER.NO_POSTS"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_SELECT_ALL = {{ "PLUGIN_BLOG_MANAGER.SELECT_ALL"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_EXPORT = {{ "PLUGIN_BLOG_MANAGER.BTN_EXPORT"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_EXPORT_ALL = {{ "PLUGIN_BLOG_MANAGER.BTN_EXPORT_ALL"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_BTN_IMPORT = {{ "PLUGIN_BLOG_MANAGER.BTN_IMPORT"|t|json_encode|raw }};
+window.PLUGIN_BLOG_MANAGER_IMPORT_SUCCESS = {{ "PLUGIN_BLOG_MANAGER.IMPORT_SUCCESS"|t|json_encode|raw }};
+window.BM_IMAGE_CACHE = {{ config.plugins['blog-manager'].image_cache ? 'true' : 'false' }};
+(function() {
+    document.addEventListener('DOMContentLoaded', function() {
+        BlogManager.init();
+    });
+})();
+</script>
+{% endblock %}

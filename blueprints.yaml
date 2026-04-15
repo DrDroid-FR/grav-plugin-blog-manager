@@ -1,0 +1,74 @@
+name: Blog Manager
+slug: blog-manager
+type: plugin
+version: 1.2.0
+description: Simplify blog post management in Grav admin
+icon: book
+author:
+  name: Developer
+  email: dev@example.com
+  url: https://example.com
+homepage: https://github.com/example/blog-manager
+keywords: blog, manager, admin, posts, markdown
+bugs: https://github.com/example/blog-manager/issues
+docs: https://github.com/example/blog-manager/README.md
+license: MIT
+
+dependencies:
+  - { name: grav, version: '>=1.7.0' }
+  - { name: admin, version: '>=1.10.0' }
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: PLUGIN_BLOG_MANAGER.PLUGIN_STATUS
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    blog_path:
+      type: text
+      label: PLUGIN_BLOG_MANAGER.BLOG_PATH
+      size: large
+      help: PLUGIN_BLOG_MANAGER.BLOG_PATH_HELP
+      placeholder: '/blog'
+
+    scan_on_init:
+      type: toggle
+      label: PLUGIN_BLOG_MANAGER.SCAN_ON_INIT
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.YES
+        0: PLUGIN_ADMIN.NO
+      validate:
+        type: bool
+      help: PLUGIN_BLOG_MANAGER.SCAN_ON_INIT_HELP
+
+    placeholder_image:
+      type: file
+      label: PLUGIN_BLOG_MANAGER.PLACEHOLDER_IMAGE
+      help: PLUGIN_BLOG_MANAGER.PLACEHOLDER_IMAGE_HELP
+      destination: 'self@:/images'
+      multiple: false
+      accept:
+        - image/*
+        - '.svg'
+
+    image_cache:
+      type: toggle
+      label: PLUGIN_BLOG_MANAGER.IMAGE_CACHE
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.YES
+        0: PLUGIN_ADMIN.NO
+      validate:
+        type: bool
+      help: PLUGIN_BLOG_MANAGER.IMAGE_CACHE_HELP

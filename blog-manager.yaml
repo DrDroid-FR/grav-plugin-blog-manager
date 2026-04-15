@@ -1,0 +1,4 @@
+enabled: true
+blog_path: /blog
+scan_on_init: true
+image_cache: true
